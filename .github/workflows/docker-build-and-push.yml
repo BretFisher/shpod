@@ -78,7 +78,8 @@ jobs:
           flavor: |
             latest=false
           tags: |
-            type=raw,value=latest
+            type=ref,event=branch,value=latest
+            type=ref,event=pr,prefix=pr
       -
         # this will build the images, once per platform, 
         # then push to both Docker Hub and GHCR
@@ -87,7 +88,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           # had to remove linux/arm/v7 due to missing docker image
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           builder: ${{ steps.buildx.outputs.name }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
