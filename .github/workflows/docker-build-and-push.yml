@@ -71,8 +71,8 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            bretfisher/shpod
-            ghcr.io/bretfisher/shpod
+            ${{ github.repository }}
+            ghcr.io/${{ github.repository }}
           flavor: |
             latest=false
           tags: |
@@ -88,20 +88,14 @@ jobs:
           # had to remove linux/arm/v7 due to missing docker image
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           builder: ${{ steps.buildx.outputs.name }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
+          # it uses github cache API for faster builds:
+          # https://github.com/crazy-max/docker-build-push-action/blob/master/docs/advanced/cache.md#cache-backend-api
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           # for an approved pull_request, only push pr-specific tags
           push: true
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
-      -
-        # Temp fix
-        # https://github.com/docker/build-push-action/issues/252
-        # https://github.com/moby/buildkit/issues/1896
-        name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
       -
         name: Show image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
