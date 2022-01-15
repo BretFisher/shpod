@@ -17,7 +17,7 @@ If you are looking for an image that works on the ARM architecture
 Bret's fork is also a state-of-the-art example of a multi-arch
 Dockerfile!
 
-
+Thanks to @jpetazzo for this fantastic open source!
 ## What's this?
 
 `shpod` is a container image based on the Alpine distribution
@@ -74,7 +74,7 @@ server to obtain the shell.
 
 Run it in a Pod and attach directly to it:
 ```bash
-kubectl run shpod --restart=Never --rm -it --image=jpetazzo/shpod
+kubectl run shpod --restart=Never --rm -it --image=bretfisher/shpod
 ```
 
 This should give you a shell in a pod, with all the tools installed.
@@ -88,7 +88,7 @@ until you create an appropriate RoleBinding or ClusterRoleBinding
 Run as a Pod (or Deployment), then expose (or port-forward) to port
 22 in that Pod, and connect with an SSH client:
 ```bash
-kubectl run shpod --image=jpetazzo/shpod
+kubectl run shpod --image=bretfisher/shpod
 kubectl wait pod shpod --for=condition=ready
 kubectl port-forward pod/shpod 2222:22
 ssh -l k8s -p 2222 localhost # the default password is "k8s"

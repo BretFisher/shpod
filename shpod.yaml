@@ -31,7 +31,7 @@ spec:
   serviceAccountName: shpod
   containers:
   - name: shpod
-    image: jpetazzo/shpod
+    image: bretfisher/shpod
     stdin: true
     tty: true
     env:
