@@ -5,19 +5,8 @@
 
 **TL,DR:** `curl https://k8smastery.com/shpod.sh | sh`
 
-If you are looking for an image that works on the ARM architecture
-(like the Raspberry Pi or the Apple M1), have a look at
-[BretFisher/shpod](https://github.com/BretFisher/shpod) instead.
-Bret's fork is also a state-of-the-art example of a multi-arch
-Dockerfile!
-
-If you are looking for an image that works on the ARM architecture
-(like the Raspberry Pi or the Apple M1), have a look at
-[BretFisher/shpod](https://github.com/BretFisher/shpod) instead.
-Bret's fork is also a state-of-the-art example of a multi-arch
-Dockerfile!
-
 Thanks to @jpetazzo for this fantastic open source!
+
 ## What's this?
 
 `shpod` is a container image based on the Alpine distribution
