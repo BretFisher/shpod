@@ -30,7 +30,7 @@ RUN helper-curl tar "--strip-components=1 linux-@GOARCH/helm" \
 FROM alpine AS httping
 RUN apk add build-base gettext git musl-libintl ncurses-dev
 RUN git clone https://salsa.debian.org/debian/httping
-WORKDIR httping
+WORKDIR /httping
 RUN sed -i s/60/0/ utils.c
 RUN make install BINDIR=/usr/local/bin
 
@@ -118,7 +118,7 @@ RUN helper-curl tar tilt \
 
 FROM alpine AS shpod
 ENV COMPLETIONS=/usr/share/bash-completion/completions
-RUN apk add apache2-utils bash bash-completion curl docker-cli file git iputils jq libintl ncurses openssh openssl sudo tmux tree vim yq
+RUN apk add --no-cache apache2-utils bash bash-completion curl docker-cli file git iputils jq libintl ncurses openssh openssl sudo tmux tree vim yq
 
 COPY --from=compose     /usr/local/bin/docker-compose /usr/local/bin
 COPY --from=crane       /usr/local/bin/crane          /usr/local/bin

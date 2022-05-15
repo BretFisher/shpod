@@ -58,10 +58,10 @@ can attach to that shell. If it runs without a pseudo-terminal,
 it will start an SSH server, and you can connect to that SSH
 server to obtain the shell.
 
-
 ## Using with a pseudo-terminal
 
 Run it in a Pod and attach directly to it:
+
 ```bash
 kubectl run shpod --restart=Never --rm -it --image=bretfisher/shpod
 ```
@@ -71,11 +71,11 @@ Most Kubernetes commands won't work (you will get permission errors)
 until you create an appropriate RoleBinding or ClusterRoleBinding
 (see below for details).
 
-
 ## Using without a pseudo-terminal
 
 Run as a Pod (or Deployment), then expose (or port-forward) to port
 22 in that Pod, and connect with an SSH client:
+
 ```bash
 kubectl run shpod --image=bretfisher/shpod
 kubectl wait pod shpod --for=condition=ready
@@ -86,7 +86,6 @@ ssh -l k8s -p 2222 localhost # the default password is "k8s"
 Note: you can change the password by setting the `PASSWORD`
 environment variable.
 
-
 ## Granting permissions
 
 By default, shpod uses the ServiceAccount of the Pod that it's
@@ -94,7 +93,7 @@ running in; and by default (on most clusters) that ServiceAccount
 won't have much permissions, meaning that you will get errors like
 the following one:
 
-```console
+```bash
 $ kubectl get pods
 Error from server (Forbidden): pods is forbidden: User "system:serviceaccount:default:default" cannot list resource "pods" in API group "" in the namespace "default"
 ```
@@ -114,7 +113,6 @@ kubectl create clusterrolebinding shpod \
 ```
 
 You can also use the one-liner below.
-
 
 ## One-liner usage
 
@@ -143,15 +141,16 @@ curl https://k8smastery.com/shpod.sh | sh
 If you don't like `curl|sh`, and/or if you want to execute things
 step by step, check the next section.
 
-
 ## Step-by-step usage
 
 1. Deploy the shpod pod:
+
    ```bash
    kubectl apply -f https://k8smastery.com/shpod.yaml
    ```
 
 2. Attach to the shpod pod:
+
    ```bash
    kubectl attach --namespace=shpod -ti shpod
    ```
@@ -171,14 +170,12 @@ and the ClusterRoleBinding with the same name:
 kubectl delete clusterrolebinding,ns shpod
 ```
 
-
 ## Opening multiple sessions
 
 Shpod tries to detect if it is already running; and if it's the case,
 it will try to start another process using `kubectl exec`. Note that
 if the first shpod process exits, Kubernetes will terminate all the
 other processes.
-
 
 ## Special handling of kubeconfig
 
@@ -187,7 +184,6 @@ where shpod is running, it will extract the first file from
 that ConfigMap and use it to populate `~/.kube/config`.
 
 This lets you inject a custom kubeconfig file into shpod.
-
 
 ## Support for other architectures
 

@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -18,9 +19,9 @@ roleRef:
   kind: ClusterRole
   name: cluster-admin
 subjects:
-- kind: ServiceAccount
-  name: shpod
-  namespace: shpod
+  - kind: ServiceAccount
+    name: shpod
+    namespace: shpod
 ---
 apiVersion: v1
 kind: Pod
@@ -30,12 +31,12 @@ metadata:
 spec:
   serviceAccountName: shpod
   containers:
-  - name: shpod
-    image: bretfisher/shpod
-    stdin: true
-    tty: true
-    env:
-    - name: HOSTIP
-      valueFrom:
-        fieldRef:
-          fieldPath: status.hostIP
+    - name: shpod
+      image: bretfisher/shpod:latest
+      stdin: true
+      tty: true
+      env:
+        - name: HOSTIP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
