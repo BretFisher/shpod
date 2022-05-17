@@ -1,5 +1,5 @@
 #!/bin/sh
-# shellcheck disable=SC2083,SC2086
+# shellcheck disable=SC1083,SC2083,SC2086
 # For more information about shpod, check it out on GitHub:
 # https://github.com/bretfisher/shpod
 if [ -f shpod.yaml ]; then
