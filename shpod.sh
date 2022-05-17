@@ -6,6 +6,7 @@ if [ -f shpod.yaml ]; then
 else
   YAML=https://k8smastery.com/shpod.yaml
 fi
+# shellcheck disable=SC2083
 if [ "$(kubectl get pod --namespace=shpod shpod --ignore-not-found -o jsonpath={.status.phase})" = "Running" ]; then
   echo "Shpod is already running. Starting a new shell with 'kubectl exec'."
   echo "(Note: if the main invocation of shpod exits, all others will be terminated.)"
