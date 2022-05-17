@@ -14,11 +14,14 @@ ignored:
   - DL3018 #apk add pin versions
   - DL3019 #don't worry about avoiding cache in build-only stages
   - DL3022 #bad rule for COPY --from
+  - DL3025 #for this image, we don't want JSON in CMD
   - DL3028 #gem install pin versions
   - DL3044 #putting arg in env is fine. False positive.
   - DL3059 #multiple consecutive runs
   - DL4006 #we don't need pipefail in this
+  - SC1083 # {} is ok in kubectl commands
   - SC2016 #we want single quotes sometimes
+  - SC2046 #we don't always quote sometimes
 
 
 # FULL TEMPLATE
