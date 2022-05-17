@@ -1,5 +1,5 @@
 #!/bin/sh
-
+# shellcheck disable=SC1083,SC2083,SC2086
 set -e
 
 TYPE=$1
