@@ -9,7 +9,7 @@ COPY helper-* /bin/
 
 # https://github.com/docker/compose/releases
 FROM builder AS compose
-ARG COMPOSE_VERSION=2.1.1
+ARG COMPOSE_VERSION=2.16.0
 RUN helper-curl bin docker-compose \
     https://github.com/docker/compose/releases/download/v${COMPOSE_VERSION}/docker-compose-linux-@UARCH
 
@@ -20,7 +20,7 @@ RUN cp $(find bin -name crane) /usr/local/bin
 
 # https://github.com/helm/helm/releases
 FROM builder AS helm
-ARG HELM_VERSION=3.7.1
+ARG HELM_VERSION=3.11.1
 RUN helper-curl tar "--strip-components=1 linux-@GOARCH/helm" \
     https://get.helm.sh/helm-v${HELM_VERSION}-linux-@GOARCH.tar.gz
 
@@ -43,7 +43,7 @@ RUN cp $(find bin -name jid) /usr/local/bin
 # https://github.com/derailed/k9s/releases
 FROM builder AS k9s
 RUN helper-curl tar k9s \
-    https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_@WTFARCH.tar.gz
+    https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_@GOARCH.tar.gz
 
 # https://github.com/kubernetes/kompose/releases
 FROM builder AS kompose
@@ -52,25 +52,25 @@ RUN helper-curl bin kompose \
 
 # https://github.com/kubernetes/kubernetes/releases
 FROM builder AS kubectl
-ARG KUBECTL_VERSION=1.22.3
+ARG KUBECTL_VERSION=1.26.1
 RUN helper-curl bin kubectl \
     https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/@GOARCH/kubectl 
 
 # https://github.com/stackrox/kube-linter/releases
 FROM builder AS kube-linter
-ARG KUBELINTER_VERSION=0.2.5
+ARG KUBELINTER_VERSION=0.6.0
 RUN go install golang.stackrox.io/kube-linter/cmd/kube-linter@$KUBELINTER_VERSION
 RUN cp $(find bin -name kube-linter) /usr/local/bin
 
 # https://github.com/bitnami-labs/sealed-secrets/releases
 FROM builder AS kubeseal
-ARG KUBESEAL_VERSION=0.16.0
-RUN helper-curl bin kubeseal \
-    https://github.com/bitnami-labs/sealed-secrets/releases/download/v$KUBESEAL_VERSION/kubeseal-@KSARCH
+ARG KUBESEAL_VERSION=0.19.5
+RUN helper-curl tar kubeseal \
+    https://github.com/bitnami-labs/sealed-secrets/releases/download/v$KUBESEAL_VERSION/kubeseal-$KUBESEAL_VERSION-linux-@GOARCH.tar.gz
 
 # https://github.com/kubernetes-sigs/kustomize/releases
 FROM builder AS kustomize
-ARG KUSTOMIZE_VERSION=4.4.1
+ARG KUSTOMIZE_VERSION=4.5.7
 RUN helper-curl tar kustomize \
     https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v$KUSTOMIZE_VERSION/kustomize_v${KUSTOMIZE_VERSION}_linux_@GOARCH.tar.gz
 
@@ -86,7 +86,7 @@ RUN helper-curl tar popeye \
 
 # https://github.com/regclient/regclient/releases
 FROM builder AS regctl
-ARG REGCLIENT_VERSION=0.3.9
+ARG REGCLIENT_VERSION=0.4.5
 RUN helper-curl bin regctl \
     https://github.com/regclient/regclient/releases/download/v$REGCLIENT_VERSION/regctl-linux-@GOARCH
 
@@ -99,26 +99,38 @@ ARG SHIP_VERSION=0.51.3
 RUN helper-curl tar ship \
     https://github.com/replicatedhq/ship/releases/download/v${SHIP_VERSION}/ship_${SHIP_VERSION}_linux_@GOARCH.tar.gz
 
-# https://github.com/GoogleContainerTools/skaffold/releases/tag/v1.34.0
+# https://github.com/GoogleContainerTools/skaffold/releases
 FROM builder AS skaffold
 RUN helper-curl bin skaffold \
     https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-@GOARCH
 
 # https://github.com/stern/stern/releases
 FROM builder AS stern
-ARG STERN_VERSION=1.20.1
-RUN helper-curl tar "--strip-components=1 stern_${STERN_VERSION}_linux_@GOARCH/stern" \
+ARG STERN_VERSION=1.23.0
+RUN helper-curl tar stern \
     https://github.com/stern/stern/releases/download/v${STERN_VERSION}/stern_${STERN_VERSION}_linux_@GOARCH.tar.gz
 
-# https://github.com/tilt-dev/tilt/releases/
+# https://github.com/tilt-dev/tilt/releases
 FROM builder AS tilt
-ARG TILT_VERSION=0.23.0
+ARG TILT_VERSION=0.31.2
 RUN helper-curl tar tilt \
-    https://github.com/tilt-dev/tilt/releases/download/v${TILT_VERSION}/tilt.${TILT_VERSION}.linux.@WTFARCH.tar.gz
+    https://github.com/tilt-dev/tilt/releases/download/v${TILT_VERSION}/tilt.${TILT_VERSION}.linux-alpine.@WTFARCH.tar.gz
+
+# https://github.com/carvel-dev/ytt/releases
+FROM builder AS ytt
+ARG YTT_VERSION=0.44.3
+RUN helper-curl bin ytt \
+    https://github.com/carvel-dev/ytt/releases/download/v${YTT_VERSION}/ytt-linux-@GOARCH
+
+# https://github.com/carvel-dev/kapp/releases
+FROM builder AS kapp
+ARG YTT_VERSION=0.54.3
+RUN helper-curl bin kapp \
+    https://github.com/carvel-dev/kapp/releases/download/v${YTT_VERSION}/kapp-linux-@GOARCH
 
 FROM alpine AS shpod
 ENV COMPLETIONS=/usr/share/bash-completion/completions
-RUN apk add --no-cache apache2-utils bash bash-completion curl docker-cli file git iputils jq libintl ncurses openssh openssl sudo tmux tree vim yq
+RUN apk add --no-cache apache2-utils bash bash-completion curl docker-cli file gettext git iputils jq libintl ncurses openssh openssl screen sudo tmux tree vim yq
 
 COPY --from=compose     /usr/local/bin/docker-compose /usr/local/bin
 COPY --from=crane       /usr/local/bin/crane          /usr/local/bin
@@ -126,6 +138,7 @@ COPY --from=helm        /usr/local/bin/helm           /usr/local/bin
 COPY --from=httping     /usr/local/bin/httping        /usr/local/bin
 COPY --from=jid         /usr/local/bin/jid            /usr/local/bin
 COPY --from=k9s         /usr/local/bin/k9s            /usr/local/bin
+COPY --from=kapp        /usr/local/bin/kapp           /usr/local/bin
 COPY --from=kubectl     /usr/local/bin/kubectl        /usr/local/bin
 COPY --from=kube-linter /usr/local/bin/kube-linter    /usr/local/bin
 COPY --from=kubeseal    /usr/local/bin/kubeseal       /usr/local/bin
@@ -137,16 +150,19 @@ COPY --from=ship        /usr/local/bin/ship           /usr/local/bin
 COPY --from=skaffold    /usr/local/bin/skaffold       /usr/local/bin
 COPY --from=stern       /usr/local/bin/stern          /usr/local/bin
 COPY --from=tilt        /usr/local/bin/tilt           /usr/local/bin
+COPY --from=ytt         /usr/local/bin/ytt            /usr/local/bin
 
 RUN set -e ; for BIN in \
     crane \
     helm \
+    kapp \
     kubectl \
     kube-linter \
     kustomize \
     regctl \
     skaffold \
     tilt \
+    ytt \
     ; do echo $BIN ; $BIN completion bash > $COMPLETIONS/$BIN.bash ; done ;\
     yq shell-completion bash > $COMPLETIONS/yq.bash
 
@@ -173,14 +189,18 @@ RUN echo k8s:x:1000: >> /etc/group \
  && chown -R k8s:k8s /home/k8s/ \
  && sed -i 's/#MaxAuthTries 6/MaxAuthTries 42/' /etc/ssh/sshd_config
 ARG TARGETARCH
-RUN mkdir /tmp/krew \
+RUN \
+ if [ "$TARGETARCH" != "386" ]; then \
+ mkdir /tmp/krew \
  && cd /tmp/krew \
  && curl -fsSL https://github.com/kubernetes-sigs/krew/releases/latest/download/krew-linux_$TARGETARCH.tar.gz | tar -zxf- \
  && sudo -u k8s -H ./krew-linux_$TARGETARCH install krew \
  && cd \
- && rm -rf /tmp/krew
+ && rm -rf /tmp/krew \
+ ; fi
 COPY --chown=1000:1000 bash_profile /home/k8s/.bash_profile
 COPY --chown=1000:1000 vimrc /home/k8s/.vimrc
+COPY --chown=1000:1000 tmux.conf /home/k8s/.tmux.conf
 COPY motd /etc/motd
 COPY setup-tailhist.sh /usr/local/bin
 
@@ -190,6 +210,7 @@ RUN ( \
     bash --version | head -n1 ;\
     curl --version | head -n1 ;\
     docker version --format="Docker {{.Client.Version}}" ;\
+    envsubst --version | head -n1 ;\
     git --version ;\
     jq --version ;\
     ssh -V ;\
@@ -201,6 +222,7 @@ RUN ( \
     httping --version ;\
     jid --version ;\
     echo "k9s $(k9s version | grep Version)" ;\
+    kapp --version | head -n1 ;\
     echo "kubectl $(kubectl version --short --client)" ;\
     echo "kube-linter $(kube-linter version)" ;\
     kubeseal --version ;\
