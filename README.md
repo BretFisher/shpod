@@ -20,6 +20,7 @@ It includes:
 - curl
 - Docker CLI
 - Docker Compose
+- envsubst
 - git
 - Helm
 - jid
