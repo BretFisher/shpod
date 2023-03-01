@@ -1,16 +1,15 @@
 # shpod
 
 [![GitHub Super-Linter](https://github.com/bretfisher/shpod/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/BretFisher/shpod/actions/workflows/linter.yml)
-[![Build and Push Image](https://github.com/bretfisher/shpod/actions/workflows/docker-build-and-push.yml/badge.svg?branch=main)](https://github.com/BretFisher/shpod/actions/workflows/docker-build-and-push.yml)
+[![Build Container Image](https://github.com/bretfisher/shpod/actions/workflows/call-docker-build.yml/badge.svg?branch=main)](https://github.com/BretFisher/shpod/actions/workflows/call-docker-build.yml)
 
 **TL,DR:** `curl https://k8smastery.com/shpod.sh | sh`
 
-Thanks to @jpetazzo for this fantastic open source!
+Thanks to [@jpetazzo](https://github.com/jpetazzo) for this fantastic open source!
 
 ## What's this?
 
-`shpod` is a container image based on the Alpine distribution
-and embarking a bunch of tools useful when working with containers,
+`shpod` is a container image based on the Alpine distribution and includes a bunch of tools useful when working with containers,
 Docker, and Kubernetes.
 
 It includes:
@@ -51,7 +50,7 @@ so that you can get all the tools you need regardless
 of your exact Kubernetes setup.
 
 To use it, you need a Kubernetes cluster. You can use Minikube,
-microk8s, Docker Desktop, AKS, EKS, GKE, anything you like, really.
+microk8s, Docker Desktop, AKS, EKS, GKE, or anything you like.
 
 If it runs with a pseudo-terminal, it will spawn a shell, and you
 can attach to that shell. If it runs without a pseudo-terminal,
