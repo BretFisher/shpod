@@ -1,6 +1,5 @@
 # shpod
 
-[![Lint Code Base](https://github.com/BretFisher/shpod/actions/workflows/call-super-linter.yaml/badge.svg)](https://github.com/BretFisher/shpod/actions/workflows/call-super-linter.yaml)
 [![Docker Build](https://github.com/BretFisher/shpod/actions/workflows/call-docker-build.yaml/badge.svg)](https://github.com/BretFisher/shpod/actions/workflows/call-docker-build.yaml)
 
 **TL,DR:** `curl https://k8smastery.com/shpod.sh | sh`
