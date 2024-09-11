@@ -137,6 +137,10 @@ To execute it:
 curl https://k8smastery.com/shpod.sh | sh
 ```
 
+(Note: It used to be available at shpod.sh and shpod.me, but these
+became pretty expensive so I decided to drop them. If you were using
+them and want something fast to type, switch to shpod.in!)
+
 If you don't like `curl|sh`, and/or if you want to execute things
 step by step, check the next section.
 
@@ -184,9 +188,9 @@ that ConfigMap and use it to populate `~/.kube/config`.
 
 This lets you inject a custom kubeconfig file into shpod.
 
-## Support for other architectures
+## Multi-arch support
 
-As of November 2021, the Dockerfile in this repository should be able
-to build images for other architectures. However, when trying to install
-a compiled binary that is not available for another architecture, a dummy
-placeholder will be installed instead.
+Shpod supports both Intel and ARM 64 bits architectures. The Dockerfile
+in this repository should be able to support other architectures fairly
+easily. If a given tool isn't available on the target architecture,
+a dummy placeholder will be installed instead.
