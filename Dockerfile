@@ -12,12 +12,6 @@ FROM builder AS argocd
 RUN helper-curl bin argocd \
     https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-@GOARCH
 
-# https://github.com/docker/compose/releases/latest
-FROM builder AS compose
-ARG COMPOSE_VERSION=2.17.2
-RUN helper-curl bin docker-compose \
-    https://github.com/docker/compose/releases/download/v${COMPOSE_VERSION}/docker-compose-linux-@UARCH
-
 # https://github.com/google/go-containerregistry/tree/main/cmd/crane
 FROM builder AS crane
 RUN go install github.com/google/go-containerregistry/cmd/crane@latest
@@ -31,7 +25,7 @@ RUN helper-curl tar flux \
 
 # https://github.com/helm/helm/releases/latest
 FROM builder AS helm
-ARG HELM_VERSION=3.11.2
+ARG HELM_VERSION=3.16.0
 RUN helper-curl tar "--strip-components=1 linux-@GOARCH/helm" \
     https://get.helm.sh/helm-v${HELM_VERSION}-linux-@GOARCH.tar.gz
 
@@ -64,13 +58,13 @@ RUN helper-curl bin kompose \
 
 # https://github.com/kubecolor/kubecolor/releases/latest
 FROM builder AS kubecolor
-ARG KUBECOLOR_VERSION=0.3.2
+ARG KUBECOLOR_VERSION=0.4.0
 RUN helper-curl tar kubecolor \
     https://github.com/kubecolor/kubecolor/releases/download/v${KUBECOLOR_VERSION}/kubecolor_${KUBECOLOR_VERSION}_linux_@GOARCH.tar.gz
 
 # https://github.com/kubernetes/kubernetes/releases/latest
 FROM builder AS kubectl
-ARG KUBECTL_VERSION=1.30.2
+ARG KUBECTL_VERSION=1.31.0
 RUN helper-curl bin kubectl \
     https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/@GOARCH/kubectl 
 
@@ -82,19 +76,19 @@ RUN cp $(find bin -name kube-linter) /usr/local/bin
 
 # https://github.com/doitintl/kube-no-trouble/releases/latest
 FROM builder AS kubent
-ARG KUBENT_VERSION=0.7.2
+ARG KUBENT_VERSION=0.7.3
 RUN helper-curl tar kubent \
     https://github.com/doitintl/kube-no-trouble/releases/download/${KUBENT_VERSION}/kubent-${KUBENT_VERSION}-linux-@GOARCH.tar.gz
 
 # https://github.com/bitnami-labs/sealed-secrets/releases/latest
 FROM builder AS kubeseal
-ARG KUBESEAL_VERSION=0.27.0
+ARG KUBESEAL_VERSION=0.27.1
 RUN helper-curl tar kubeseal \
     https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-@GOARCH.tar.gz
 
 # https://github.com/kubernetes-sigs/kustomize/releases/latest
 FROM builder AS kustomize
-ARG KUSTOMIZE_VERSION=5.4.2
+ARG KUSTOMIZE_VERSION=5.4.3
 RUN helper-curl tar kustomize \
     https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_@GOARCH.tar.gz
 
@@ -110,7 +104,7 @@ RUN helper-curl tar popeye \
 
 # https://github.com/regclient/regclient/releases/latest
 FROM builder AS regctl
-ARG REGCLIENT_VERSION=0.6.1
+ARG REGCLIENT_VERSION=0.7.1
 RUN helper-curl bin regctl \
     https://github.com/regclient/regclient/releases/download/v${REGCLIENT_VERSION}/regctl-linux-@GOARCH
 
@@ -137,34 +131,33 @@ RUN helper-curl tar stern \
 
 # https://github.com/tilt-dev/tilt/releases/latest
 FROM builder AS tilt
-ARG TILT_VERSION=0.33.17
+ARG TILT_VERSION=0.33.20
 RUN helper-curl tar tilt \
     https://github.com/tilt-dev/tilt/releases/download/v${TILT_VERSION}/tilt.${TILT_VERSION}.linux-alpine.@WTFARCH.tar.gz
 
 # https://github.com/vmware-tanzu/velero/releases/latest
 FROM builder AS velero
-ARG VELERO_VERSION=1.14.0
+ARG VELERO_VERSION=1.14.1
 RUN helper-curl tar "--strip-components=1 velero-v${VELERO_VERSION}-linux-@GOARCH/velero" \
     https://github.com/vmware-tanzu/velero/releases/download/v${VELERO_VERSION}/velero-v${VELERO_VERSION}-linux-@GOARCH.tar.gz
 
 # https://github.com/carvel-dev/ytt/releases/latest
 FROM builder AS ytt
-ARG YTT_VERSION=0.49.1
+ARG YTT_VERSION=0.63.3
 RUN helper-curl bin ytt \
     https://github.com/carvel-dev/ytt/releases/download/v${YTT_VERSION}/ytt-linux-@GOARCH
 
 # https://github.com/carvel-dev/kapp/releases/latest
 FROM builder AS kapp
-ARG YTT_VERSION=0.62.1
+ARG YTT_VERSION=0.63.3
 RUN helper-curl bin kapp \
     https://github.com/carvel-dev/kapp/releases/download/v${YTT_VERSION}/kapp-linux-@GOARCH
 
 FROM alpine AS shpod
 ENV COMPLETIONS=/usr/share/bash-completion/completions
-RUN apk add --no-cache apache2-utils bash bash-completion curl docker-cli file gettext git iputils jq libintl ncurses openssh openssl screen sudo tmux tree vim yq
+RUN apk add --no-cache apache2-utils bash bash-completion curl docker-cli docker-compose file gettext git iputils jq libintl ncurses openssh openssl screen sudo tmux tree vim yq
 
 COPY --from=argocd      /usr/local/bin/argocd         /usr/local/bin
-COPY --from=compose     /usr/local/bin/docker-compose /usr/local/bin
 COPY --from=crane       /usr/local/bin/crane          /usr/local/bin
 COPY --from=flux        /usr/local/bin/flux           /usr/local/bin
 COPY --from=helm        /usr/local/bin/helm           /usr/local/bin
@@ -191,6 +184,7 @@ COPY --from=ytt         /usr/local/bin/ytt            /usr/local/bin
 RUN set -e ; for BIN in \
     argocd \
     crane \
+    docker \
     flux \
     helm \
     kapp \
