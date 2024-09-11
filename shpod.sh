@@ -2,11 +2,12 @@
 # shellcheck disable=SC1083,SC2083,SC2086
 # For more information about shpod, check it out on GitHub:
 # https://github.com/bretfisher/shpod
-if [ -f shpod.yaml ]; then
-  YAML=shpod.yaml
-else
-  YAML=https://k8smastery.com/shpod.yaml
-fi
+YAML=https://k8smastery.com/shpod.yaml
+for location in "/etc" "$HOME/.shpod" `pwd` ; do
+  if [ -f "$location/shpod.yaml" ]; then
+    YAML="$location/shpod.yaml"
+  fi
+done
 if [ "$(kubectl get pod --namespace=shpod shpod --ignore-not-found -o jsonpath={.status.phase})" = "Running" ]; then
   echo "Shpod is already running. Starting a new shell with 'kubectl exec'."
   echo "(Note: if the main invocation of shpod exits, all others will be terminated.)"
