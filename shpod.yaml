@@ -35,7 +35,7 @@ spec:
       image: bretfisher/shpod:latest
       stdin: true
       tty: true
-      imagepullpolicy: Always
+      imagePullPolicy: Always
       env:
         - name: HOSTIP
           valueFrom:
