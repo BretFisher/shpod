@@ -12,7 +12,7 @@ FROM builder AS argocd
 RUN helper-curl bin argocd \
     https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-@GOARCH
 
-# https://github.com/docker/compose/releases
+# https://github.com/docker/compose/releases/latest
 FROM builder AS compose
 ARG COMPOSE_VERSION=2.17.2
 RUN helper-curl bin docker-compose \
@@ -23,13 +23,13 @@ FROM builder AS crane
 RUN go install github.com/google/go-containerregistry/cmd/crane@latest
 RUN cp $(find bin -name crane) /usr/local/bin
 
-# https://github.com/fluxcd/flux2/releases
+# https://github.com/fluxcd/flux2/releases/latest
 FROM builder AS flux
 ARG FLUX_VERSION=2.3.0
 RUN helper-curl tar flux \
     https://github.com/fluxcd/flux2/releases/download/v$FLUX_VERSION/flux_${FLUX_VERSION}_linux_@GOARCH.tar.gz
 
-# https://github.com/helm/helm/releases
+# https://github.com/helm/helm/releases/latest
 FROM builder AS helm
 ARG HELM_VERSION=3.11.2
 RUN helper-curl tar "--strip-components=1 linux-@GOARCH/helm" \
@@ -46,57 +46,57 @@ RUN sed -i s/60/0/ utils.c
 RUN cmake .
 RUN make install BINDIR=/usr/local/bin
 
-# https://github.com/simeji/jid/releases
+# https://github.com/simeji/jid/releases/latest
 FROM builder AS jid
 ARG JID_VERSION=0.7.6
-RUN go install github.com/simeji/jid/cmd/jid@v$JID_VERSION
+RUN go install github.com/simeji/jid/cmd/jid@v${JID_VERSION}
 RUN cp $(find bin -name jid) /usr/local/bin
 
-# https://github.com/derailed/k9s/releases
+# https://github.com/derailed/k9s/releases/latest
 FROM builder AS k9s
 RUN helper-curl tar k9s \
     https://github.com/derailed/k9s/releases/latest/download/k9s_Linux_@GOARCH.tar.gz
 
-# https://github.com/kubernetes/kompose/releases
+# https://github.com/kubernetes/kompose/releases/latest
 FROM builder AS kompose
 RUN helper-curl bin kompose \
     https://github.com/kubernetes/kompose/releases/latest/download/kompose-linux-@GOARCH
 
-# https://github.com/kubecolor/kubecolor/releases
+# https://github.com/kubecolor/kubecolor/releases/latest
 FROM builder AS kubecolor
 ARG KUBECOLOR_VERSION=0.3.2
 RUN helper-curl tar kubecolor \
     https://github.com/kubecolor/kubecolor/releases/download/v${KUBECOLOR_VERSION}/kubecolor_${KUBECOLOR_VERSION}_linux_@GOARCH.tar.gz
 
-# https://github.com/kubernetes/kubernetes/releases
+# https://github.com/kubernetes/kubernetes/releases/latest
 FROM builder AS kubectl
 ARG KUBECTL_VERSION=1.30.2
 RUN helper-curl bin kubectl \
     https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/@GOARCH/kubectl 
 
-# https://github.com/stackrox/kube-linter/releases
+# https://github.com/stackrox/kube-linter/releases/latest
 FROM builder AS kube-linter
-ARG KUBELINTER_VERSION=v0.6.8
-RUN go install golang.stackrox.io/kube-linter/cmd/kube-linter@$KUBELINTER_VERSION
+ARG KUBELINTER_VERSION=0.6.8
+RUN go install golang.stackrox.io/kube-linter/cmd/kube-linter@v${KUBELINTER_VERSION}
 RUN cp $(find bin -name kube-linter) /usr/local/bin
 
-# https://github.com/doitintl/kube-no-trouble/releases
+# https://github.com/doitintl/kube-no-trouble/releases/latest
 FROM builder AS kubent
 ARG KUBENT_VERSION=0.7.2
 RUN helper-curl tar kubent \
     https://github.com/doitintl/kube-no-trouble/releases/download/${KUBENT_VERSION}/kubent-${KUBENT_VERSION}-linux-@GOARCH.tar.gz
 
-# https://github.com/bitnami-labs/sealed-secrets/releases
+# https://github.com/bitnami-labs/sealed-secrets/releases/latest
 FROM builder AS kubeseal
 ARG KUBESEAL_VERSION=0.27.0
 RUN helper-curl tar kubeseal \
-    https://github.com/bitnami-labs/sealed-secrets/releases/download/v$KUBESEAL_VERSION/kubeseal-$KUBESEAL_VERSION-linux-@GOARCH.tar.gz
+    https://github.com/bitnami-labs/sealed-secrets/releases/download/v${KUBESEAL_VERSION}/kubeseal-${KUBESEAL_VERSION}-linux-@GOARCH.tar.gz
 
-# https://github.com/kubernetes-sigs/kustomize/releases
+# https://github.com/kubernetes-sigs/kustomize/releases/latest
 FROM builder AS kustomize
 ARG KUSTOMIZE_VERSION=5.4.2
 RUN helper-curl tar kustomize \
-    https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v$KUSTOMIZE_VERSION/kustomize_v${KUSTOMIZE_VERSION}_linux_@GOARCH.tar.gz
+    https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_@GOARCH.tar.gz
 
 # https://ngrok.com/download
 FROM builder AS ngrok
@@ -108,51 +108,52 @@ FROM builder AS popeye
 RUN helper-curl tar popeye \
     https://github.com/derailed/popeye/releases/latest/download/popeye_Linux_@WTFARCH.tar.gz
 
-# https://github.com/regclient/regclient/releases
+# https://github.com/regclient/regclient/releases/latest
 FROM builder AS regctl
 ARG REGCLIENT_VERSION=0.6.1
 RUN helper-curl bin regctl \
-    https://github.com/regclient/regclient/releases/download/v$REGCLIENT_VERSION/regctl-linux-@GOARCH
+    https://github.com/regclient/regclient/releases/download/v${REGCLIENT_VERSION}/regctl-linux-@GOARCH
 
 # This tool is still used in the kustomize section, but we will probably
 # deprecate it eventually as we only use a tiny feature that doesn't seem
 # to be available anymore in more recent versions (or requires some work
 # to adapt). Also, it's not available on all platforms and doesn't compile.
+# https://github.com/replicatedhq/ship/releases/latest
 FROM builder AS ship
 ARG SHIP_VERSION=0.51.3
 RUN helper-curl tar ship \
     https://github.com/replicatedhq/ship/releases/download/v${SHIP_VERSION}/ship_${SHIP_VERSION}_linux_@GOARCH.tar.gz
 
-# https://github.com/GoogleContainerTools/skaffold/releases
+# https://github.com/GoogleContainerTools/skaffold/releases/latest
 FROM builder AS skaffold
 RUN helper-curl bin skaffold \
     https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-@GOARCH
 
-# https://github.com/stern/stern/releases
+# https://github.com/stern/stern/releases/latest
 FROM builder AS stern
 ARG STERN_VERSION=1.30.0
 RUN helper-curl tar stern \
     https://github.com/stern/stern/releases/download/v${STERN_VERSION}/stern_${STERN_VERSION}_linux_@GOARCH.tar.gz
 
-# https://github.com/tilt-dev/tilt/releases
+# https://github.com/tilt-dev/tilt/releases/latest
 FROM builder AS tilt
 ARG TILT_VERSION=0.33.17
 RUN helper-curl tar tilt \
     https://github.com/tilt-dev/tilt/releases/download/v${TILT_VERSION}/tilt.${TILT_VERSION}.linux-alpine.@WTFARCH.tar.gz
 
-# https://github.com/vmware-tanzu/velero/releases
+# https://github.com/vmware-tanzu/velero/releases/latest
 FROM builder AS velero
 ARG VELERO_VERSION=1.14.0
 RUN helper-curl tar "--strip-components=1 velero-v${VELERO_VERSION}-linux-@GOARCH/velero" \
     https://github.com/vmware-tanzu/velero/releases/download/v${VELERO_VERSION}/velero-v${VELERO_VERSION}-linux-@GOARCH.tar.gz
 
-# https://github.com/carvel-dev/ytt/releases
+# https://github.com/carvel-dev/ytt/releases/latest
 FROM builder AS ytt
 ARG YTT_VERSION=0.49.1
 RUN helper-curl bin ytt \
     https://github.com/carvel-dev/ytt/releases/download/v${YTT_VERSION}/ytt-linux-@GOARCH
 
-# https://github.com/carvel-dev/kapp/releases
+# https://github.com/carvel-dev/kapp/releases/latest
 FROM builder AS kapp
 ARG YTT_VERSION=0.62.1
 RUN helper-curl bin kapp \
